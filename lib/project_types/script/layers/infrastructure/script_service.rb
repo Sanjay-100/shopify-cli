@@ -36,10 +36,10 @@ module Script
             moduleUploadUrl: module_upload_url,
           }
 
-          variables.merge!({
-            language: library[:language],
-            version: library[:version],
-          }) if library
+          if library
+            variables[:language] = library[:language]
+            variables[:version] = library[:version]
+          end
 
           resp_hash = make_request(query_name: query_name, variables: variables)
           user_errors = resp_hash["data"]["appScriptSet"]["userErrors"]
