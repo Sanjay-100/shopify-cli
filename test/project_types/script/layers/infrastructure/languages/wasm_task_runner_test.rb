@@ -49,7 +49,6 @@ describe Script::Layers::Infrastructure::Languages::WasmTaskRunner do
       let(:wasmfile) { "script.wasm" }
 
       before do
-        ctx.mkdir_p(File.dirname(wasmfile))
         ctx.write(wasmfile, wasm)
       end
       it "should return the contents of the file" do
