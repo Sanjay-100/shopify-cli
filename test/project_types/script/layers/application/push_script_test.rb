@@ -10,8 +10,9 @@ describe Script::Layers::Application::PushScript do
   let(:force) { true }
   let(:use_msgpack) { true }
   let(:extension_point_type) { "discount" }
-  let(:metadata_file_location) { "build/metadata.json" }
-  let(:metadata) { Script::Layers::Domain::Metadata.new("1", "0", use_msgpack) }
+  let(:metadata_file_location) { "metadata.json" }
+  let(:metadata_repository) { TestHelpers::FakeMetadataRepository.new(metadata_file_location) }
+  let(:metadata) { metadata_repository.get_metadata(metadata_file_location) }
   let(:library_version) { "1.0.0" }
   let(:library_language) { "assemblyscript" }
   let(:library_name) { "@shopify/fake-library-name" }
@@ -49,7 +50,7 @@ describe Script::Layers::Application::PushScript do
     Script::Layers::Infrastructure::PushPackageRepository.stubs(:new).returns(push_package_repository)
     Script::Layers::Infrastructure::ExtensionPointRepository.stubs(:new).returns(extension_point_repository)
     Script::Layers::Infrastructure::ScriptProjectRepository.stubs(:new).returns(script_project_repository)
-    Script::Layers::Infrastructure::MetadataRepository.any_instance.stubs(:get_metadata).returns(metadata)
+    Script::Layers::Infrastructure::MetadataRepository.stubs(:new).returns(metadata_repository)
     Script::Layers::Infrastructure::Languages::TaskRunner
       .stubs(:for)
       .with(@context, library_language, script_name)

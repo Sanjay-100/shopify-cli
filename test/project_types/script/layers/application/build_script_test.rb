@@ -11,8 +11,9 @@ describe Script::Layers::Application::BuildScript do
     let(:op_failed_msg) { "msg" }
     let(:content) { "content" }
     let(:compiled_type) { "wasm" }
-    let(:metadata) { Script::Layers::Domain::Metadata.new("1", "0", false) }
     let(:metadata_file_location) { "metadata.json" }
+    let(:metadata_repository) { TestHelpers::FakeMetadataRepository.new(metadata_file_location) }
+    let(:metadata) { metadata_repository.get_metadata(metadata_file_location) }
     let(:task_runner) { stub(compiled_type: compiled_type, metadata_file_location: metadata_file_location) }
     let(:script_project) { stub }
 
@@ -47,7 +48,7 @@ describe Script::Layers::Application::BuildScript do
         .stubs(:language)
         .returns(library_language)
 
-      Script::Layers::Infrastructure::MetadataRepository.any_instance.stubs(:get_metadata).returns(metadata)
+      Script::Layers::Infrastructure::MetadataRepository.stubs(:new).returns(metadata_repository)
     end
 
     subject do
