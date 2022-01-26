@@ -11,7 +11,7 @@ describe Script::Layers::Application::PushScript do
   let(:use_msgpack) { true }
   let(:extension_point_type) { "discount" }
   let(:metadata_file_location) { "metadata.json" }
-  let(:metadata_repository) { TestHelpers::FakeMetadataRepository.new(metadata_file_location) }
+  let(:metadata_repository) { TestHelpers::FakeMetadataRepository.new }
   let(:metadata) { metadata_repository.get_metadata(metadata_file_location) }
   let(:library_version) { "1.0.0" }
   let(:library_language) { "assemblyscript" }
@@ -57,6 +57,7 @@ describe Script::Layers::Application::PushScript do
       .returns(task_runner)
     ShopifyCLI::Environment.stubs(:interactive?).returns(true)
 
+    metadata_repository.create_metadata(metadata_file_location)
     extension_point_repository.create_extension_point(extension_point_type)
     push_package_repository.create_push_package(
       script_project: script_project,

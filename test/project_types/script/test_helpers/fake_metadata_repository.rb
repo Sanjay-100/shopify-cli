@@ -2,13 +2,14 @@
 
 module TestHelpers
   class FakeMetadataRepository
-    def initialize(file_location)
+    def initialize
       @cache = {}
+    end
 
-      schema_major_version = "1"
-      schema_minor_version = "0"
-      use_msgpack = true
-
+    def create_metadata(file_location,
+      schema_major_version = "1",
+      schema_minor_version = "0",
+      use_msgpack = true)
       @cache[file_location] = Script::Layers::Domain::Metadata.new(
         schema_major_version,
         schema_minor_version,

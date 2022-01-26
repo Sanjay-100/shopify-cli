@@ -12,7 +12,7 @@ describe Script::Layers::Application::BuildScript do
     let(:content) { "content" }
     let(:compiled_type) { "wasm" }
     let(:metadata_file_location) { "metadata.json" }
-    let(:metadata_repository) { TestHelpers::FakeMetadataRepository.new(metadata_file_location) }
+    let(:metadata_repository) { TestHelpers::FakeMetadataRepository.new }
     let(:metadata) { metadata_repository.get_metadata(metadata_file_location) }
     let(:task_runner) { stub(compiled_type: compiled_type, metadata_file_location: metadata_file_location) }
     let(:script_project) { stub }
@@ -48,6 +48,7 @@ describe Script::Layers::Application::BuildScript do
         .stubs(:language)
         .returns(library_language)
 
+      metadata_repository.create_metadata(metadata_file_location)
       Script::Layers::Infrastructure::MetadataRepository.stubs(:new).returns(metadata_repository)
     end
 
