@@ -36,10 +36,10 @@ module Script
             moduleUploadUrl: module_upload_url,
           }
 
-          if library
-            variables[:language] = library[:language]
-            variables[:version] = library[:version]
-          end
+          variables[:library] = {
+            language: library[:language],
+            version: library[:version],
+          }  if library
 
           resp_hash = make_request(query_name: query_name, variables: variables)
           user_errors = resp_hash["data"]["appScriptSet"]["userErrors"]
