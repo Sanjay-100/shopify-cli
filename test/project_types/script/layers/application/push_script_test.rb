@@ -98,6 +98,22 @@ describe Script::Layers::Application::PushScript do
 
         assert_equal uuid, script_project_repository.get.uuid
       end
+
+      describe "when the script project's language is wasm" do
+        let(:library_language) { "wasm" }
+        it "should not raise LanguageLibraryForAPINotFoundError" do
+          Script::Layers::Application::ProjectDependencies
+            .expects(:install).with(ctx: @context, task_runner: task_runner)
+          Script::Layers::Application::BuildScript.expects(:call).with(
+            ctx: @context,
+            task_runner: task_runner,
+            script_project: script_project,
+            library: library
+          )
+
+          capture_io { subject }
+        end
+      end
     end
 
     describe "when the task runner fails to find the library name in the installed dependencies" do
@@ -110,6 +126,16 @@ describe Script::Layers::Application::PushScript do
       it "should raise APILibraryNotFoundError" do
         error = assert_raises(Script::Layers::Infrastructure::Errors::APILibraryNotFoundError) { subject }
         assert_equal library_name, error.library_name
+      end
+    end
+
+    describe "when the script project's language is not found in the extension point's libraries" do
+      before do
+        ep.libraries.stubs(:for).with(library_language).returns(nil)
+      end
+
+      it "should raise LanguageLibraryForAPINotFoundError" do
+        assert_raises(Script::Layers::Infrastructure::Errors::LanguageLibraryForAPINotFoundError) { subject }
       end
     end
   end

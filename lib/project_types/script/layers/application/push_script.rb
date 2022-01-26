@@ -14,6 +14,12 @@ module Script
 
             extension_point = ExtensionPoints.get(type: script_project.extension_point_type)
             library_name = extension_point.libraries.for(script_project.language)&.package
+
+            raise Infrastructure::Errors::LanguageLibraryForAPINotFoundError.new(
+              language: script_project.language,
+              api: script_project.extension_point_type
+            ) unless library_name || (script_project.language == "wasm")
+
             library = {
               language: script_project.language,
               version: task_runner.library_version(library_name),
